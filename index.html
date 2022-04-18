@@ -1,17 +1,33 @@
----
-layout: default
----
-<div class="posts">
-  {% for post in paginator.posts %}
-  {% include post.html post=post %}
-  {% endfor %}
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>hag.codes</title>
+  </head>
+  <body>
+  <p>Welcome to my site.</p>
 
+  <p>To open the developer tool console:</p>
 
-<div class="pagination" role="navigation">
-  {% if paginator.next_page %}
-  <a class="pagination-item older" href="{{ paginator.next_page_path | prepend: site.github.url }}">Older</a> {% else %}
-  <span class="pagination-item older">Older</span> {% endif %} {% if paginator.previous_page %}
-  <a class="pagination-item newer" href="{{ paginator.previous_page_path | prepend: site.github.url }}">Newer</a> {% else %}
-  <span class="pagination-item newer">Newer</span> {% endif %}
-</div>
+  <ul>
+    <li> for chrome: Command+Option+C (Mac) or Control+Shift+C (Windows, Linux, Chrome OS).</li>
+    <li> for firefox: Command+Option+I (Mac) or Control+Shift+I (Windows, Linux, Chrome OS).</li>
+    <li> for safari: Command+, to open settings, and in advanced panel turn on developer tools. After
+    that: Command+Option+I</li>
+  </ul>
+
+  <p><button onclick="import('./scripts/jslisp.js')">Load JS Lisp</button></p>
+
+  <ul>
+    <li>
+      <button onclick="console.log('running: with (scheme) (define `x` (plus, 3, 4))\n', eval('with (scheme) (define `x` (plus, 3, 4))'))">
+        `with (scheme) (define `x` (plus, 3, 4))`
+      </button>
+    </li>
+    <li>
+      <button onclick="console.log('running: with (scheme) x\n', eval('with (scheme) x'))">
+        `with (scheme) x`
+      </button>
+    </li>
+  </ul>
+  </body>
+</html>
