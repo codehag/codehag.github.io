@@ -1,7 +1,5 @@
 function $(name) {
-  if (!this.args) this.args = 0;
-  this["a"] = name[0];
-  return this.args++;
+  this[name] = {};
 }
 
 function plus (x, ...y) {
@@ -35,9 +33,22 @@ function letvar(name, val) {
   return nextStatement.bind(that);
 }
 
-function lambda(...args) {
+function lambda(params) {
+  params = params[0].split(" ");
+  params.map($);
   return function(head, ...body) {
-    return head(...body);
+    return function(...args) {
+      // set args.
+      for (let i = 0; i < params.length; i++) {
+        this[params[i]].valueOf = () => args[i];
+      }
+      const returnval = head(...body);
+      // clear args.
+      for (let i; i < args.length; i++) {
+        this[params[i]] = undefined;
+      }
+      return returnval;
+    }
   }
 }
 
@@ -63,11 +74,11 @@ function nextStatement(car, ...cdr) {
 function define(name) {
   return (function(car, ...cdr) {
     if (cdr.length == 1) {
-      scheme[name[0]] = cdr;
+      this[name[0]] = cdr;
     }
-    scheme[name[0]] = car.call(this, ...cdr);
+    this[name[0]] = car.call(this, ...cdr);
     return nextStatement;
-  })
+  }).bind(this);
 }
 
 globalThis.scheme = {
@@ -82,7 +93,7 @@ globalThis.scheme = {
   equal,
   letvar,
   };
-globalThis.define = define;
+globalThis.define = define.bind(globalThis);
 globalThis.log = log;
 globalThis.plus = plus;
 globalThis.$ = $;
@@ -93,4 +104,5 @@ globalThis.cons = cons;
 globalThis.foreach = foreach;
 globalThis.equal = equal;
 globalThis.letvar = letvar;
+globalThis.lambda = lambda;
 
