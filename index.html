@@ -33,6 +33,12 @@
         Run: `with (scheme) x`
       </button>
     </li>
+    <li>
+      <button onclick="console.log('\nwith (scheme) (define `x` (plus, 3, 4))',
+                                   '\n               (cond (equal, x, 9)',
+                                   '\n                     (log, `hi`)',
+                                   '\n                     (log, `bye`))'); eval('with (scheme) (define `x` (plus, 3, 4)) (cond (equal, x, 9) (log, `hi`) (log, `bye`))')"
+              >Conditionals with scheme</button>
   </ul>
 
   <aside>
@@ -40,4 +46,7 @@
                              href=https://motherfuckingwebsite.com/>https://motherfuckingwebsite.com/</a>
   </aside>
   </body>
+  <script>
+    //import('./scripts/jslisp.js');
+  </script>
 </html>
