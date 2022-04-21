@@ -4,32 +4,11 @@ function $(name) {
   return ref;
 }
 
-function fold(op, args) {
-  if (args.length == 1) {
-    return args[0];
+function plus (x, ...y) {
+  if (!y.length) {
+    return x;
   }
-  args.unshift(op(args.shift(), args.shift()));
-  return fold(op, args);
-}
-
-function plus(args) {
-  const op = (a, b) => a + b;
-  fold(op, args);
-}
-
-function sub(args) {
-  const op = (a, b) => a - b;
-  fold(op, args);
-}
-
-function div(args) {
-  const op = (a, b) => a / b;
-  fold(op, args);
-}
-
-function mul(args) {
-  const op = (a, b) => a / b;
-  fold(op, args);
+  return x + plus(...y);
 }
 
 function log(fn) {
@@ -37,23 +16,7 @@ function log(fn) {
 }
 
 function equal(a, b) {
-  return a.valueOf() === b.valueOf();
-}
-
-function lt(a, b) {
-  return a.valueOf() < b.valueOf();
-}
-
-function lte(a, b) {
-  return a.valueOf() <= b.valueOf();
-}
-
-function gt(a, b) {
-  return a.valueOf() > b.valueOf();
-}
-
-function gte(a, b) {
-  return a.valueOf() >= b.valueOf();
+  return a === b;
 }
 
 function cond(cond, ...args0) {
@@ -76,6 +39,7 @@ function lambda(params) {
   params = params[0].split(" ");
   const refs = params.map($);
   return function(head, ...body) {
+    console.log("unlink");
     for (let i = 0; i < params.length; i++) {
       this[params[i]] = undefined;
     }
@@ -108,12 +72,15 @@ function nextStatement(car, ...cdr) {
   if (!cdr.length) {
     return car;
   }
-  return [car, ...cdr];
 }
 
 function define(name) {
   return (function(car, ...cdr) {
-    this[name[0]] = nextStatement(car, ...cdr);
+    if (cdr.length == 1) {
+      this[name[0]] = cdr;
+    }
+    this[name[0]] = car.call(this, ...cdr);
+    return nextStatement;
   }).bind(this);
 }
 
@@ -121,28 +88,17 @@ globalThis.scheme = {
   define,
   log,
   plus,
-  sub,
-  div,
-  mul,
   nextStatement,
   cond,
   $,
   cons,
   foreach,
   equal,
-  lt,
-  lte,
-  gt,
-  gte,
   letvar,
   };
-
 globalThis.define = define.bind(globalThis);
 globalThis.log = log;
 globalThis.plus = plus;
-globalThis.sub = sub;
-globalThis.div = div;
-globalThis.mul = mul;
 globalThis.$ = $;
 globalThis.nextStatement = nextStatement;
 globalThis.cond = cond;
@@ -150,10 +106,6 @@ globalThis.equal = equal;
 globalThis.cons = cons;
 globalThis.foreach = foreach;
 globalThis.equal = equal;
-globalThis.lt = lt;
-globalThis.lte = lte;
-globalThis.gt = gt;
-globalThis.gte = gte;
 globalThis.letvar = letvar;
 globalThis.lambda = lambda;
 
