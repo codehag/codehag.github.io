@@ -37,9 +37,8 @@ function letvar(name, val) {
 
 function lambda(params) {
   params = params[0].split(" ");
-  const refs = params.map($);
-  return function(head, ...body) {
-    console.log("unlink");
+  const refs = params.map($.bind(this));
+  return (head, ...body) => {
     for (let i = 0; i < params.length; i++) {
       this[params[i]] = undefined;
     }
@@ -48,9 +47,7 @@ function lambda(params) {
       for (let i = 0; i < params.length; i++) {
         refs[i].valueOf = () => args[i];
       }
-      const returnval = head(...body);
-      // clear args.
-      return returnval;
+      return head(...body);
     }
   }
 }
@@ -63,6 +60,7 @@ function foreach(head, ...body) {
   for (let i in body) {
     head(i);
   }
+  return nextStatement;
 }
 
 function nextStatement(car, ...cdr) {
@@ -84,8 +82,8 @@ function define(name) {
   }).bind(this);
 }
 
-globalThis.scheme = {
-  define,
+var scheme = {
+  define: (...args) => define(scheme, ...args),
   log,
   plus,
   nextStatement,
@@ -95,7 +93,10 @@ globalThis.scheme = {
   foreach,
   equal,
   letvar,
+  lambda: (...args) => lambda.call(scheme, ...args),
   };
+
+globalThis.scheme = scheme;
 globalThis.define = define.bind(globalThis);
 globalThis.log = log;
 globalThis.plus = plus;
