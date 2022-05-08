@@ -106,11 +106,3 @@ function define(name) {
 
 globalThis.scheme = new Scheme();
 
-conjure
-  (define `a`
-    (plus, 1, 10))
-  (console.log, a)
-
-  (define `b`
-    (Math.pow, 2, 3))
-  (console.log, b)

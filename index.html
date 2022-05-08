@@ -52,11 +52,11 @@ const conditional =
               (log \`when true\`, x)
               (log \`when false\`, x))`
 const shame =
-    `with (scheme) conjure
-        (define \`myFn\`
-          (lambda \`arg1 arg2\`
-              (plus, arg1, arg2)))
-        (log \`result\` (myFn, 15, 15))`
+  `with (scheme) conjure
+      (define \`myFn\`
+        (lambda \`arg1 arg2\`
+            (plus, arg1, arg2)))
+      (log \`result\` (myFn, 15, 15))`
 
 const examples = {def, conditional, shame};
 
