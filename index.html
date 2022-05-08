@@ -18,40 +18,59 @@
     that: Command+Option+I</li>
   </ul>
 
-  <p><button onclick="import('./scripts/jslisp.js'); console.log('loaded!')">Load JS Scheme</button></p>
+  <p>then try these </p>
 
-  <p>then ... </p>
-
-  <ul>
-    <li>
-      <button onclick="console.log('running: with (scheme) (define `x` (plus, 3, 4))\n', eval('with (scheme) (define `x` (plus, 3, 4))'))">
-        Run: `with (scheme) (define `x` (plus, 3, 4))`
-      </button>
-    </li>
-    <li>
-      <button onclick="console.log('running: with (scheme) x\n', eval('with (scheme) x'))">
-        Run: `with (scheme) x`
-      </button>
-    </li>
-    <li>
-      <button onclick="console.log('\nwith (scheme) (define `x` (plus, 3, 4))',
-                                   '\n               (cond (equal, x, 9)',
-                                   '\n                     (log, `hi`)',
-                                   '\n                     (log, `bye`))'); eval('with (scheme) (define `x` (plus, 3, 4)) (cond (equal, x, 9) (log, `hi`) (log, `bye`))')"
-              >Conditionals with scheme</button>
-    <li>
-      <button onclick="console.log('with (scheme) (lambda `y x` (plus, x, y))(15, 15)\n'); eval('with (scheme) (lambda `y x` (plus, x, y))(15, 15)')">
-        I feel ashamed for this one
-      </button>
-    </li>
-  </ul>
+  <div id="examples"></div>
 
   <aside>
               The design is inspired by <a
                              href=https://motherfuckingwebsite.com/>https://motherfuckingwebsite.com/</a>
   </aside>
   </body>
-  <script src="./scripts/jslisp.js">
-    //import('./scripts/jslisp.js');
+  <script src="./scripts/jslisp.js"></script>
+  <script>
+
+function evalAndPrint(source) {
+  console.log(source);
+  eval(source);
+}
+
+function copy(source) {
+  navigator.clipboard.writeText(source);
+}
+
+const def =
+  `with (scheme) conjure
+      (define \`myNumber\` (plus, 3, 4))
+      (log \`the value of myNumber is\`, myNumber)`
+const conditional =
+  `with (scheme) conjure
+      (define \`x\`
+          (plus, 3, 4))
+      (cond
+          (equal, x, 9)
+              (log \`when true\`, x)
+              (log \`when false\`, x))`
+const shame =
+    `with (scheme) conjure
+        (define \`myFn\`
+          (lambda \`arg1 arg2\`
+              (plus, arg1, arg2)))
+        (log \`result\` (myFn, 15, 15))`
+
+const examples = {def, conditional, shame};
+
+const target = document.querySelector("#examples");
+const list = document.createElement("ul");
+target.appendChild(list);
+for (const name in examples) {
+  const element = document.createElement("li");
+  element.innerHTML = `
+    <pre><code>${examples[name]}</code></pre>
+    <button onclick=evalAndPrint(${name})>run.</button>
+    <button onclick=copy(${name})>copy.</button>`;
+  list.appendChild(element);
+}
+
   </script>
 </html>

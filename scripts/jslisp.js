@@ -11,8 +11,16 @@ function plus (x, ...y) {
   return x + plus(...y);
 }
 
-function log(fn) {
-  console.log(fn);
+function log(name) {
+  name = name[0];
+  return (function (car, ...cdr) {
+    if (!cdr.length) {
+      console.log(name, car);
+    } else {
+      console.log(name, car.call(this, ...cdr));
+    }
+    return conjure.bind(this);
+  }).bind(this || globalThis);
 }
 
 function equal(a, b) {
@@ -20,19 +28,14 @@ function equal(a, b) {
 }
 
 function cond(cond, ...args0) {
-  return function(consequent, ...args1) {
-    return function(alternative, ...args2) {
+  return (consequent, ...args1) => {
+    return (alternative, ...args2) => {
       if (cond(...args0)) {
-        return nextStatement(consequent, ...args1);
+        return conjure(consequent, ...args1);
       }
-      return nextStatement(alternative, ...args2);
+      return conjure(alternative, ...args2);
     }
   }
-}
-
-function letvar(name, val) {
-  var that = { [name]: val };
-  return nextStatement.bind(that);
 }
 
 function lambda(params) {
@@ -60,53 +63,54 @@ function foreach(head, ...body) {
   for (let i in body) {
     head(i);
   }
-  return nextStatement;
+  return conjure;
 }
 
-function nextStatement(car, ...cdr) {
+class Scheme {
+  constructor() {
+    return conjure.bind(this);
+  }
+}
+
+
+class Conjuration extends Scheme {
+  constructor(value) {
+    super();
+    this.valueOf = () => value;
+  }
+
+  define(...args) { return define.call(this, ...args) }
+  lambda(...args) { return lambda.call(scheme, ...args) }
+}
+
+function conjure(car, ...cdr) {
   if (typeof car == "function" && cdr.length) {
-    return car(...cdr);
+    return new Conjuration(car(...cdr));
   }
   if (!cdr.length) {
-    return car;
+    return new Conjuration(car);
   }
 }
 
 function define(name) {
-  return (function(car, ...cdr) {
-    if (cdr.length == 1) {
-      this[name[0]] = cdr;
+  name = name[0].split(" ")[0];
+  return (function (car, ...cdr) {
+    if (!cdr.length) {
+      this[name] = car;
+    } else {
+      this[name] = car.call(this, ...cdr);
     }
-    this[name[0]] = car.call(this, ...cdr);
-    return nextStatement;
-  }).bind(this);
+    return conjure.bind(this);
+  }).bind(this || globalThis);
 }
 
-var scheme = {
-  define: (...args) => define(scheme, ...args),
-  log,
-  plus,
-  nextStatement,
-  cond,
-  $,
-  cons,
-  foreach,
-  equal,
-  letvar,
-  lambda: (...args) => lambda.call(scheme, ...args),
-  };
+globalThis.scheme = new Scheme();
 
-globalThis.scheme = scheme;
-globalThis.define = define.bind(globalThis);
-globalThis.log = log;
-globalThis.plus = plus;
-globalThis.$ = $;
-globalThis.nextStatement = nextStatement;
-globalThis.cond = cond;
-globalThis.equal = equal;
-globalThis.cons = cons;
-globalThis.foreach = foreach;
-globalThis.equal = equal;
-globalThis.letvar = letvar;
-globalThis.lambda = lambda;
+conjure
+  (define `a`
+    (plus, 1, 10))
+  (console.log, a)
 
+  (define `b`
+    (Math.pow, 2, 3))
+  (console.log, b)
