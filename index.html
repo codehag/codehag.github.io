@@ -26,6 +26,77 @@
 
   <div id="examples"></div>
 
+  <div>
+    Syntax:
+  </div>
+  <table>
+    <tr>
+      <td>
+        <code>with (scheme) conjure (code)</code>
+      </td>
+      <td>
+        start conjuring scheme code
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>(define `variableName` (value))</code>
+      </td>
+      <td>
+        define something as having a value. In the parentheses, anything can go.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>(define `variableName`, value))</code>
+      </td>
+      <td>
+        alternate spelling
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>(log `variableName` (value))</code>
+      </td>
+      <td>
+        log a message and a value. In the parentheses, anything can go, including function calls
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>(log `log message`, value)</code>
+      </td>
+      <td>
+        alternate spelling
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>(lambda `arg1 arg2 argn` (fn, arg1, arg2, argn))</code>
+      </td>
+      <td>
+        create an anonymous function
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>(lambda `arg1 arg2 argn` (fn (arg1, arg2, argn)))</code>
+      </td>
+      <td>
+        create an anonymous function (alternate spelling)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>(cond (testFn) (consequentFn) (alternateFn))</code>
+      </td>
+      <td>
+        conditional statement
+      </td>
+    </tr>
+  </table>
+
+  <div style="display:block; height: 10px"></div>
 
   <aside>
               The design is inspired by <a
